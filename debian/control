@@ -80,7 +80,6 @@ Architecture: all
 Pre-Depends: ${misc:Pre-Depends}
 Depends:
  busybox (>> ${source:Upstream-Version}) | busybox-static (>> ${source:Upstream-Version}),
- lsb-base,
  ${misc:Depends},
 Provides: linux-kernel-log-daemon, system-log-daemon
 Conflicts: linux-kernel-log-daemon, system-log-daemon
@@ -125,7 +124,6 @@ Architecture: linux-any
 Pre-Depends: ${misc:Pre-Depends}
 Depends:
  busybox (>> ${source:Upstream-Version}) | busybox-static (>> ${source:Upstream-Version}),
- lsb-base,
  ${misc:Depends},
 Provides: dhcpd
 Description: Provides the busybox DHCP server implementation
