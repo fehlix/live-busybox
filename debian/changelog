@@ -1,3 +1,16 @@
+busybox (1:1.36.0-1~exp1) experimental; urgency=medium
+
+  * new upstream release 1.36.0
+  * use-libresolv-on-non-linux-too.patch: remove for now
+    (upstream did it in a different, incomplete way)
+  * spelling.diff: remove hunks which are applied upstream
+  * fix-non-linux-build.patch: remove hunks which are applied upstream
+  * refresh configs: enable ash sleep builtin, sha1/sha256 hwaccel,
+    loop configure ioctl.
+    New applets (tsort, seedrngm, tree) are not enabled
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Sat, 21 Jan 2023 17:37:28 +0300
+
 busybox (1:1.35.0-4) unstable; urgency=medium
 
   * static build: disable blkid applet (CONFIG_BLKID, #1023501)
