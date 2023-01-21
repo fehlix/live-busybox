@@ -13,4 +13,3 @@ install-readlink-in-bin.patch
 spelling.diff
 platform-linux.diff
 fix-non-linux-build.patch
-use-libresolv-on-non-linux-too.patch
