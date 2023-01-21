@@ -176,7 +176,7 @@ override_dh_installinit:
 ifeq (linux,$(DEB_HOST_ARCH_OS))
 # udhcpc
 # udhcpd
-	dh_installinit -pudhcpd --onlyscripts
+	dh_installinit -pudhcpd
 endif
 
 override_dh_gencontrol:
