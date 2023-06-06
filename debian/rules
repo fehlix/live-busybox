@@ -170,14 +170,18 @@ override_dh_install: $(patsubst %,$b/%/.stamp-build, ${flavours})
 	  $$(grep -v sbin/init $b/udeb/busybox.links | sed 's|^|/bin/busybox |')
 
 override_dh_installinit:
-	dh_installinit -pbusybox-syslogd
 	dh_installinit -pbusybox-syslogd --name=busybox-klogd
+	dh_installinit -pbusybox-syslogd
 
 ifeq (linux,$(DEB_HOST_ARCH_OS))
 # udhcpc
 # udhcpd
 	dh_installinit -pudhcpd
 endif
+
+override_dh_installsystemd:
+	dh_installsystemd -pbusybox-syslogd --name=busybox-klogd
+	dh_installsystemd -pbusybox-syslogd
 
 override_dh_gencontrol:
 # after shlibdeps finished, grab ${shlibs:Depends} from busybox package

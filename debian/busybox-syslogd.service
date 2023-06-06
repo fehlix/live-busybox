@@ -1,0 +1,21 @@
+[Unit]
+Description=Busybox syslogd system logging daemon
+Documentation=man:busybox(1)
+# Can use remote-fs.target and network.target as dependencies,
+# to put logs to a remote filesystem or to log over network.
+# For a small stand-alone system it is usually not needed.
+#After=remote-fs.target
+#After=network.target
+
+[Service]
+Environment=SYSLOG_OPTS=
+EnvironmentFile=-/etc/default/busybox-syslogd
+# Assume "started" state begin after fork only. Do not use -n.
+Type=forking
+ExecStart=/sbin/syslogd $SYSLOG_OPTS
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=syslog.service
+Also=busybox-klogd.service
