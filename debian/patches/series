@@ -13,3 +13,4 @@ install-readlink-in-bin.patch
 spelling.diff
 platform-linux.diff
 fix-non-linux-build.patch
+syslogd-fork-after-init-not-before.patch
