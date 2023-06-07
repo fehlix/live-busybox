@@ -160,20 +160,6 @@ execute_after_dh_link-arch:
 	dh_link -pbusybox-udeb \
 	  $$(grep -v sbin/init $b/udeb/busybox.links | sed 's|^|/bin/busybox |')
 
-override_dh_installinit:
-	dh_installinit -pbusybox-syslogd --name=busybox-klogd
-	dh_installinit -pbusybox-syslogd
-
-ifeq (linux,$(DEB_HOST_ARCH_OS))
-# udhcpc
-# udhcpd
-	dh_installinit -pudhcpd
-endif
-
-override_dh_installsystemd:
-	dh_installsystemd -pbusybox-syslogd --name=busybox-klogd
-	dh_installsystemd -pbusybox-syslogd
-
 execute_before_dh_gencontrol-arch:
 # after shlibdeps finished, grab ${shlibs:Depends} from busybox package
 # and transform it into Built-Using field (also dpkg-query bug #588505)
@@ -182,3 +168,9 @@ execute_before_dh_gencontrol-arch:
 	  srcs="$$srcs $$(dpkg-query -f '$${source:Package} (= $${source:Version}),' -W $$p)"; \
 	done ; \
 	echo "built-using=$$srcs" >> debian/busybox-static.substvars
+
+# install busybox-klogd startup scripts
+execute_before_dh_installinit-indep:
+	dh_installinit -pbusybox-syslogd --name=busybox-klogd
+execute_before_dh_installsystemd-indep:
+	dh_installsystemd -pbusybox-syslogd --name=busybox-klogd
