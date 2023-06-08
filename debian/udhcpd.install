@@ -1,2 +1,2 @@
-debian/udhcpd.conf etc/
+examples/udhcp/udhcpd.conf etc/
 debian/udhcpd.conf.5 usr/share/man/man5/
