@@ -1747,6 +1747,15 @@ index 68ccdd874..085a4d489 100644
  //config:	select LONG_OPTS
  //config:	help
  //config:	Run program with some namespaces unshared from parent.
--- 
-2.30.2
-
+diff --git a/networking/nbd-client.c b/networking/nbd-client.c
+index 755b42ccd..c9960fbe6 100644
+--- a/networking/nbd-client.c
++++ b/networking/nbd-client.c
+@@ -5,6 +5,7 @@
+  */
+ //config:config NBDCLIENT
+ //config:	bool "nbd-client (6 kb)"
++//config:	depends on PLATFORM_LINUX
+ //config:	default y
+ //config:	help
+ //config:	Network block device client
