@@ -1,0 +1,231 @@
+From 02378ce20c6d2df062357b6d60fc440609d203be Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Tue, 13 Jun 2023 16:16:37 +0200
+Subject: [PATCH] syslogd: decrease stack usage, ~50 bytes
+
+function                                             old     new   delta
+syslogd_init                                           -    1007   +1007
+syslogd_main                                        1619     636    -983
+------------------------------------------------------------------------------
+(add/remove: 1/0 grow/shrink: 0/1 up/down: 1007/-983)          Total: 24 bytes
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
+ sysklogd/syslogd.c | 156 +++++++++++++++++++++++----------------------
+ 1 file changed, 81 insertions(+), 75 deletions(-)
+
+diff --git a/sysklogd/syslogd.c b/sysklogd/syslogd.c
+index 6ddfd771a..20034e969 100644
+--- a/sysklogd/syslogd.c
++++ b/sysklogd/syslogd.c
+@@ -1002,20 +1002,63 @@ static int try_to_resolve_remote(remoteHost_t *rh)
+ }
+ #endif
+ 
+-static void do_syslogd(void) NORETURN;
+-static void do_syslogd(void)
++/* By doing init in a separate function we decrease stack usage
++ * in main loop.
++ */
++static int NOINLINE syslogd_init(char **argv)
+ {
++	int opts;
++	char OPTION_DECL;
+ #if ENABLE_FEATURE_REMOTE_LOG
+-	llist_t *item;
++	llist_t *remoteAddrList = NULL;
+ #endif
+-#if ENABLE_FEATURE_SYSLOGD_DUP
+-	int last_sz = -1;
+-	char *last_buf;
+-	char *recvbuf = G.recvbuf;
+-#else
+-#define recvbuf (G.recvbuf)
++
++	/* No non-option params */
++	opts = getopt32(argv, "^"OPTION_STR"\0""=0", OPTION_PARAM);
++#if ENABLE_FEATURE_REMOTE_LOG
++	while (remoteAddrList) {
++		remoteHost_t *rh = xzalloc(sizeof(*rh));
++		rh->remoteHostname = llist_pop(&remoteAddrList);
++		rh->remoteFD = -1;
++		rh->last_dns_resolve = monotonic_sec() - DNS_WAIT_SEC - 1;
++		llist_add_to(&G.remoteHosts, rh);
++	}
+ #endif
+ 
++#ifdef SYSLOGD_MARK
++	if (opts & OPT_mark) // -m
++		G.markInterval = xatou_range(opt_m, 0, INT_MAX/60) * 60;
++#endif
++	//if (opts & OPT_nofork) // -n
++	//if (opts & OPT_outfile) // -O
++	if (opts & OPT_loglevel) // -l
++		G.logLevel = xatou_range(opt_l, 1, 8);
++	//if (opts & OPT_small) // -S
++#if ENABLE_FEATURE_ROTATE_LOGFILE
++	if (opts & OPT_filesize) // -s
++		G.logFileSize = xatou_range(opt_s, 0, INT_MAX/1024) * 1024;
++	if (opts & OPT_rotatecnt) // -b
++		G.logFileRotate = xatou_range(opt_b, 0, 99);
++#endif
++#if ENABLE_FEATURE_IPC_SYSLOG
++	if (opt_C) // -Cn
++		G.shm_size = xatoul_range(opt_C, 4, INT_MAX/1024) * 1024;
++#endif
++	/* If they have not specified remote logging, then log locally */
++	if (ENABLE_FEATURE_REMOTE_LOG && !(opts & OPT_remotelog)) // -R
++		option_mask32 |= OPT_locallog;
++#if ENABLE_FEATURE_SYSLOGD_CFG
++	parse_syslogdcfg(opt_f);
++#endif
++
++	/* Store away localhost's name before the fork */
++	G.hostname = safe_gethostname();
++	*strchrnul(G.hostname, '.') = '\0';
++
++	if (!(opts & OPT_nofork)) {
++		bb_daemonize_or_rexec(DAEMON_CHDIR_ROOT, argv);
++	}
++
+ 	/* Set up signal handlers (so that they interrupt read()) */
+ 	signal_no_SA_RESTART_empty_mask(SIGTERM, record_signo);
+ 	signal_no_SA_RESTART_empty_mask(SIGINT, record_signo);
+@@ -1027,15 +1070,39 @@ static void do_syslogd(void)
+ #endif
+ 	xmove_fd(create_socket(), STDIN_FILENO);
+ 
+-	if (option_mask32 & OPT_circularlog)
++	if (opts & OPT_circularlog)
+ 		ipcsyslog_init();
+ 
+-	if (option_mask32 & OPT_kmsg)
++	if (opts & OPT_kmsg)
+ 		kmsg_init();
+ 
++	return opts;
++}
++
++int syslogd_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
++int syslogd_main(int argc UNUSED_PARAM, char **argv)
++{
++	int opts;
++#if ENABLE_FEATURE_REMOTE_LOG
++	llist_t *item;
++#endif
++#if ENABLE_FEATURE_SYSLOGD_DUP
++	int last_sz = -1;
++	char *last_buf;
++	char *recvbuf;
++#else
++#define recvbuf (G.recvbuf)
++#endif
++
++	INIT_G();
++	opts = syslogd_init(argv);
++
+ 	timestamp_and_log_internal("syslogd started: BusyBox v" BB_VER);
+ 	write_pidfile_std_path_and_ext("syslogd");
+ 
++#if ENABLE_FEATURE_SYSLOGD_DUP
++	recvbuf = G.recvbuf;
++#endif
+ 	while (!bb_got_signal) {
+ 		ssize_t sz;
+ 
+@@ -1070,7 +1137,7 @@ static void do_syslogd(void)
+ 			sz--;
+ 		}
+ #if ENABLE_FEATURE_SYSLOGD_DUP
+-		if ((option_mask32 & OPT_dup) && (sz == last_sz))
++		if ((opts & OPT_dup) && (sz == last_sz))
+ 			if (memcmp(last_buf, recvbuf, sz) == 0)
+ 				continue;
+ 		last_sz = sz;
+@@ -1111,7 +1178,7 @@ static void do_syslogd(void)
+ 			}
+ 		}
+ #endif
+-		if (!ENABLE_FEATURE_REMOTE_LOG || (option_mask32 & OPT_locallog)) {
++		if (!ENABLE_FEATURE_REMOTE_LOG || (opts & OPT_locallog)) {
+ 			recvbuf[sz] = '\0'; /* ensure it *is* NUL terminated */
+ 			split_escape_and_log(recvbuf, sz);
+ 		}
+@@ -1120,73 +1187,12 @@ static void do_syslogd(void)
+ 	timestamp_and_log_internal("syslogd exiting");
+ 	remove_pidfile_std_path_and_ext("syslogd");
+ 	ipcsyslog_cleanup();
+-	if (option_mask32 & OPT_kmsg)
++	if (opts & OPT_kmsg)
+ 		kmsg_cleanup();
+ 	kill_myself_with_sig(bb_got_signal);
+ #undef recvbuf
+ }
+ 
+-int syslogd_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+-int syslogd_main(int argc UNUSED_PARAM, char **argv)
+-{
+-	int opts;
+-	char OPTION_DECL;
+-#if ENABLE_FEATURE_REMOTE_LOG
+-	llist_t *remoteAddrList = NULL;
+-#endif
+-
+-	INIT_G();
+-
+-	/* No non-option params */
+-	opts = getopt32(argv, "^"OPTION_STR"\0""=0", OPTION_PARAM);
+-#if ENABLE_FEATURE_REMOTE_LOG
+-	while (remoteAddrList) {
+-		remoteHost_t *rh = xzalloc(sizeof(*rh));
+-		rh->remoteHostname = llist_pop(&remoteAddrList);
+-		rh->remoteFD = -1;
+-		rh->last_dns_resolve = monotonic_sec() - DNS_WAIT_SEC - 1;
+-		llist_add_to(&G.remoteHosts, rh);
+-	}
+-#endif
+-
+-#ifdef SYSLOGD_MARK
+-	if (opts & OPT_mark) // -m
+-		G.markInterval = xatou_range(opt_m, 0, INT_MAX/60) * 60;
+-#endif
+-	//if (opts & OPT_nofork) // -n
+-	//if (opts & OPT_outfile) // -O
+-	if (opts & OPT_loglevel) // -l
+-		G.logLevel = xatou_range(opt_l, 1, 8);
+-	//if (opts & OPT_small) // -S
+-#if ENABLE_FEATURE_ROTATE_LOGFILE
+-	if (opts & OPT_filesize) // -s
+-		G.logFileSize = xatou_range(opt_s, 0, INT_MAX/1024) * 1024;
+-	if (opts & OPT_rotatecnt) // -b
+-		G.logFileRotate = xatou_range(opt_b, 0, 99);
+-#endif
+-#if ENABLE_FEATURE_IPC_SYSLOG
+-	if (opt_C) // -Cn
+-		G.shm_size = xatoul_range(opt_C, 4, INT_MAX/1024) * 1024;
+-#endif
+-	/* If they have not specified remote logging, then log locally */
+-	if (ENABLE_FEATURE_REMOTE_LOG && !(opts & OPT_remotelog)) // -R
+-		option_mask32 |= OPT_locallog;
+-#if ENABLE_FEATURE_SYSLOGD_CFG
+-	parse_syslogdcfg(opt_f);
+-#endif
+-
+-	/* Store away localhost's name before the fork */
+-	G.hostname = safe_gethostname();
+-	*strchrnul(G.hostname, '.') = '\0';
+-
+-	if (!(opts & OPT_nofork)) {
+-		bb_daemonize_or_rexec(DAEMON_CHDIR_ROOT, argv);
+-	}
+-
+-	do_syslogd();
+-	/* return EXIT_SUCCESS; */
+-}
+-
+ /* Clean up. Needed because we are included from syslogd_and_logger.c */
+ #undef DEBUG
+ #undef SYSLOGD_MARK
+-- 
+2.39.2
+

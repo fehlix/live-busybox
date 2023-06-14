@@ -1,0 +1,48 @@
+From 373f64eef3cc121d7531522ef654feb0a8068d5a Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Tue, 13 Jun 2023 16:25:13 +0200
+Subject: [PATCH] syslogd: daemonize _after_ init (so that init errors are
+ visible, if they occur)
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
+ sysklogd/syslogd.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sysklogd/syslogd.c b/sysklogd/syslogd.c
+index 20034e969..7711e467b 100644
+--- a/sysklogd/syslogd.c
++++ b/sysklogd/syslogd.c
+@@ -1055,6 +1055,14 @@ static int NOINLINE syslogd_init(char **argv)
+ 	G.hostname = safe_gethostname();
+ 	*strchrnul(G.hostname, '.') = '\0';
+ 
++	xmove_fd(create_socket(), STDIN_FILENO);
++
++	if (opts & OPT_circularlog)
++		ipcsyslog_init();
++
++	if (opts & OPT_kmsg)
++		kmsg_init();
++
+ 	if (!(opts & OPT_nofork)) {
+ 		bb_daemonize_or_rexec(DAEMON_CHDIR_ROOT, argv);
+ 	}
+@@ -1068,14 +1076,6 @@ static int NOINLINE syslogd_init(char **argv)
+ 	signal(SIGALRM, do_mark);
+ 	alarm(G.markInterval);
+ #endif
+-	xmove_fd(create_socket(), STDIN_FILENO);
+-
+-	if (opts & OPT_circularlog)
+-		ipcsyslog_init();
+-
+-	if (opts & OPT_kmsg)
+-		kmsg_init();
+-
+ 	return opts;
+ }
+ 
+-- 
+2.39.2
+
