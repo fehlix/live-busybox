@@ -1,3 +1,16 @@
+busybox (1:1.36.1-2) unstable; urgency=medium
+
+  * replace syslog init patch with better version from upstream:
+    syslogd-decrease-stack-usage-50-bytes.patch (prep)
+    syslogd-daemonize-after-init-make-errs-visible.patch
+  * platform-linux.diff: nbd is also linux-only
+  * udhcpd: remove obsolete copy of udhcpd.conf,
+    use one from examples/udhcp/udhcpd.conf
+  * remove "remaining" parameter from udhcpd.conf.5 (Closes: #891757)
+  * d/*.lintian-overrides: add #!/bin/busybox overrides for the init scripts
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Wed, 14 Jun 2023 23:10:23 +0300
+
 busybox (1:1.36.1-1) unstable; urgency=medium
 
   * new upstream release 1.36.0 (and bugfix release 1.36.1)
