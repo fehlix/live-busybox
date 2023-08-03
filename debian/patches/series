@@ -14,6 +14,7 @@ spelling.diff
 platform-linux.diff
 fix-non-linux-build.patch
 #
-syslogd-decrease-stack-usage-50-bytes.patch
-syslogd-daemonize-after-init-make-errs-visible.patch
-syslogd-avoid-nulling-devlog.patch
+syslogd-fork-after-init-not-before.patch
+#syslogd-decrease-stack-usage-50-bytes.patch
+#syslogd-daemonize-after-init-make-errs-visible.patch
+#syslogd-avoid-nulling-devlog.patch
