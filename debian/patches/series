@@ -18,3 +18,4 @@ syslogd-decrease-stack-usage-50-bytes.patch
 syslogd-daemonize-after-init-make-errs-visible.patch
 syslogd-fix-breakage-caused-by-daemonize-_after_-ini.patch
 syslogd-option_mask32.patch
+install-fix-chown-resetting-suid-sgid-bits-from-chmod.patch
