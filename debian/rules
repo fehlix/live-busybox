@@ -172,5 +172,9 @@ execute_before_dh_gencontrol-arch:
 # install busybox-klogd startup scripts
 execute_before_dh_installinit-indep:
 	dh_installinit -pbusybox-syslogd --name=busybox-klogd
-execute_before_dh_installsystemd-indep:
+override_dh_installsystemd-indep:
+# explicitly list all packages with .service files here
 	dh_installsystemd -pbusybox-syslogd --name=busybox-klogd
+	dh_installsystemd -pbusybox-syslogd
+# the following does not work (see #1039142 for details):
+#	dh_installsystemd -pudhcpd --no-enable --no-start
