@@ -1,0 +1,2 @@
+# busybox implements dpkg applet so it really accesses dpkg db
+busybox: uses-dpkg-database-directly
