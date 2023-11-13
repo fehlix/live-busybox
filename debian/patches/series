@@ -16,4 +16,4 @@ fix-non-linux-build.patch
 #
 syslogd-decrease-stack-usage-50-bytes.patch
 syslogd-daemonize-after-init-make-errs-visible.patch
-syslogd-avoid-nulling-devlog.patch
+syslogd-fix-breakage-caused-by-daemonize-_after_-ini.patch

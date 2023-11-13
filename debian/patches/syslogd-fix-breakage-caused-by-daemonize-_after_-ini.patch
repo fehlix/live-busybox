@@ -1,0 +1,61 @@
+From 5fa39d48d53c7a3360d4f4da2c00232eb674678e Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Tue, 3 Oct 2023 17:18:41 +0200
+Subject: [PATCH] syslogd: fix breakage caused by "daemonize _after_ init"
+ change
+
+function                                             old     new   delta
+syslogd_init                                        1007    1140    +133
+create_socket                                        143       -    -143
+------------------------------------------------------------------------------
+(add/remove: 0/1 grow/shrink: 1/0 up/down: 133/-143)          Total: -10 bytes
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
+ sysklogd/syslogd.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/sysklogd/syslogd.c b/sysklogd/syslogd.c
+index 83b5c0cf6..7558051f0 100644
+--- a/sysklogd/syslogd.c
++++ b/sysklogd/syslogd.c
+@@ -956,9 +956,7 @@ static void do_mark(int sig)
+ }
+ #endif
+ 
+-/* Don't inline: prevent struct sockaddr_un to take up space on stack
+- * permanently */
+-static NOINLINE int create_socket(void)
++static int create_socket(void)
+ {
+ 	struct sockaddr_un sunx;
+ 	int sock_fd;
+@@ -1008,6 +1006,7 @@ static int try_to_resolve_remote(remoteHost_t *rh)
+ static int NOINLINE syslogd_init(char **argv)
+ {
+ 	int opts;
++	int fd;
+ 	char OPTION_DECL;
+ #if ENABLE_FEATURE_REMOTE_LOG
+ 	llist_t *remoteAddrList = NULL;
+@@ -1055,7 +1054,7 @@ static int NOINLINE syslogd_init(char **argv)
+ 	G.hostname = safe_gethostname();
+ 	*strchrnul(G.hostname, '.') = '\0';
+ 
+-	xmove_fd(create_socket(), STDIN_FILENO);
++	fd = create_socket();
+ 
+ 	if (opts & OPT_circularlog)
+ 		ipcsyslog_init();
+@@ -1067,6 +1066,8 @@ static int NOINLINE syslogd_init(char **argv)
+ 		bb_daemonize_or_rexec(DAEMON_CHDIR_ROOT, argv);
+ 	}
+ 
++	xmove_fd(fd, STDIN_FILENO);
++
+ 	/* Set up signal handlers (so that they interrupt read()) */
+ 	signal_no_SA_RESTART_empty_mask(SIGTERM, record_signo);
+ 	signal_no_SA_RESTART_empty_mask(SIGINT, record_signo);
+-- 
+2.39.2
+
