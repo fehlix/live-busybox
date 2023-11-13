@@ -48,14 +48,16 @@ SYSLOG_OPTS=	# Additional options given to the server
 if [ -f /etc/default/busybox-syslogd ] ; then
 	. /etc/default/busybox-syslogd
 fi
+PIDFILE=/var/run/$NAME.pid
 
 server() {
 	case "$1" in
-		(start) args="-S -o" ;;
+		(start) args="-S -o -c root:adm" ;;
 		(stop)  args="-K -o -q" ;;
 		(check) args="-K -t -q" ;;
 	esac
-	busybox start-stop-daemon $args -p /var/run/$NAME.pid \
+	umask 0024
+	busybox start-stop-daemon $args -p $PIDFILE \
 		-x $DAEMON -- $SYSLOG_OPTS
 }
 
@@ -68,6 +70,8 @@ case "$1" in
 		log_end_msg 1
 		exit 1
 	fi
+	# undo umask
+	chmod 0644 $PIDFILE 2>/dev/null || :
 	;;
     stop)
 	log_daemon_msg "Stopping $DESC" "$NAME"

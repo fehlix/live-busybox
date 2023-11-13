@@ -14,6 +14,9 @@ EnvironmentFile=-/etc/default/busybox-syslogd
 Type=forking
 ExecStart=/sbin/syslogd $SYSLOG_OPTS
 Restart=on-failure
+# make logfiles root:adm, mode 0640 by default
+Group=adm
+UMask=0024
 
 [Install]
 WantedBy=multi-user.target
