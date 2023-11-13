@@ -1,3 +1,31 @@
+busybox (1:1.36.1-5) UNRELEASED; urgency=medium
+
+  * config:
+   - deb: turn off embedded scripts (not used anyway)
+   - deb: enable minimal dpkg (the same as in static config) (+lintian tag)
+   - deb: enable passwd, su, sulogin (the same as in static config)
+   - deb: enable ed (the same as in static config)
+   - deb: enable cron & crontab (the same as in static config)
+   - deb: enable tunctl (the same as in static config)
+   - deb: set ifupdown udhcpc options to -R -n (the same as in static config)
+   - deb: enable tc (traffic control) applet, the same as in static build
+   - deb: enable ifupdown options like of static build
+   - static: enable tftp progress bar (the same as in deb config)
+   At this point, deb&static configs are almost the same, with the differences:
+    - static (&libgcc), prefer_applets, standalone_shell, bb_passwd & bb_shadow
+    - deb has no blkid (#1023501) and no telnetd (#881626)
+   - deb,static: disable unusual ipneigh applet (but keep ip neigh)
+   - deb,static,udeb: enable udhcpc6 (#1036446)
+   - deb,static: enable wget timeout (-T) option
+  * spelling.diff: forward upstream
+  * d/*.lintian-overrides: +spelling-error-in-binary iif if [bin/busybox]
+    (this is Input InterFace)
+  * added udhcpd.service (not shipped by default, see #1039142)
+  * busybox-syslogd*.service: update Documentation: settings
+  * update tags for debian/patches/syslogd-option_mask32.patch
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Mon, 13 Nov 2023 15:41:44 +0300
+
 busybox (1:1.36.1-4) unstable; urgency=medium
 
   * Revert "Revert recent changes that have broken syslogd in d-i."
