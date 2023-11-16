@@ -6,17 +6,21 @@ Documentation=man:syslogd(1)
 # For a small stand-alone system it is usually not needed.
 #After=remote-fs.target
 #After=network.target
+# We're socket-activated from /run/systemd/journald/syslog,
+# See https://www.freedesktop.org/wiki/Software/systemd/syslog for details.
+Requires=syslog.socket
 
 [Service]
 Environment=SYSLOG_OPTS=
 EnvironmentFile=-/etc/default/busybox-syslogd
-# Assume "started" state begin after fork only. Do not use -n.
-Type=forking
-ExecStart=/sbin/syslogd $SYSLOG_OPTS
+Type=simple
+ExecStart=/sbin/syslogd -n $SYSLOG_OPTS
 Restart=on-failure
 # make logfiles root:adm, mode 0640 by default
 Group=adm
 UMask=0024
+# To avoid looping by our own messages. This makes our own errors invisible.
+StandardOutput=null
 
 [Install]
 WantedBy=multi-user.target
