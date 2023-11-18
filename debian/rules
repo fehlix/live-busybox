@@ -176,5 +176,4 @@ override_dh_installsystemd-indep:
 # explicitly list all packages with .service files here
 	dh_installsystemd -pbusybox-syslogd --name=busybox-klogd
 	dh_installsystemd -pbusybox-syslogd
-# the following does not work (see #1039142 for details):
-#	dh_installsystemd -pudhcpd --no-enable --no-start
+	dh_installsystemd -pudhcpd --no-enable
