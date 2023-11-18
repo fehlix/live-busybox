@@ -1,4 +1,4 @@
-busybox (1:1.36.1-5) UNRELEASED; urgency=medium
+busybox (1:1.36.1-5) unstable; urgency=medium
 
   * config:
    - deb: turn off embedded scripts (not used anyway)
@@ -20,11 +20,14 @@ busybox (1:1.36.1-5) UNRELEASED; urgency=medium
   * spelling.diff: forward upstream
   * d/*.lintian-overrides: +spelling-error-in-binary iif if [bin/busybox]
     (this is Input InterFace)
-  * added udhcpd.service (not shipped by default, see #1039142)
-  * busybox-syslogd*.service: update Documentation: settings
+  * added udhcpd.service
   * update tags for debian/patches/syslogd-option_mask32.patch
+  * busybox-syslogd*.service: update Documentation: settings
+  * make busybox-syslogd socket-activated to work correctly under systemd
+    (syslogd-make-it-optionally-systemd-socket-activated.patch,
+    busybox-syslogd.service changes)
 
- -- Michael Tokarev <mjt@tls.msk.ru>  Mon, 13 Nov 2023 15:41:44 +0300
+ -- Michael Tokarev <mjt@tls.msk.ru>  Sat, 18 Nov 2023 19:53:06 +0300
 
 busybox (1:1.36.1-4) unstable; urgency=medium
 
