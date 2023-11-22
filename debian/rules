@@ -170,9 +170,9 @@ execute_before_dh_gencontrol-arch:
 	echo "built-using=$$srcs" >> debian/busybox-static.substvars
 
 # install busybox-klogd startup scripts
-execute_before_dh_installinit-indep:
+execute_before_dh_installinit:
 	dh_installinit -pbusybox-syslogd --name=busybox-klogd
-override_dh_installsystemd-indep:
+override_dh_installsystemd:
 # explicitly list all packages with .service files here
 	dh_installsystemd -pbusybox-syslogd --name=busybox-klogd
 	dh_installsystemd -pbusybox-syslogd
