@@ -1,3 +1,10 @@
+busybox (1:1.36.1-6~exp.1) experimental; urgency=medium
+
+  * Coordinated move of binaries into /usr.
+  * Upload to experimental.
+
+ -- Chris Boot <bootc@debian.org>  Thu, 23 Nov 2023 12:35:38 +0000
+
 busybox (1:1.36.1-5) unstable; urgency=medium
 
   * config:
