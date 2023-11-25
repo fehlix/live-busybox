@@ -1,1 +1,1 @@
-busybox-udeb: spelling-error-in-binary iif if [bin/busybox]
+busybox-udeb: spelling-error-in-binary iif if [usr/bin/busybox]
