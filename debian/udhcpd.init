@@ -1,4 +1,4 @@
-#! /bin/busybox ash
+#! /usr/bin/busybox ash
 #
 # Written by Miquel van Smoorenburg <miquels@cistron.nl>.
 # Modified for Debian GNU/Linux by Ian Murdock <imurdock@gnu.ai.mit.edu>
