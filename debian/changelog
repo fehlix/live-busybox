@@ -1,3 +1,17 @@
+busybox (1:1.36.1-6) unstable; urgency=medium
+
+  [ Michael Tokarev ]
+  * d/rules: override-dh_installsystemd: s/-indep//
+  * d/busybox-syslogd.{service,init}: umask 026, not 024
+  * adjust paths to busybox binary after move
+    /bin/busybox => /usr/bin/busybox
+  * Upload to unstable.
+
+  [ Chris Boot ]
+  * Update binary path in lintian overrides.
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Thu, 30 Nov 2023 15:32:46 +0300
+
 busybox (1:1.36.1-6~exp.1) experimental; urgency=medium
 
   * Coordinated move of binaries into /usr.
