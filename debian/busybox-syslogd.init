@@ -56,7 +56,7 @@ server() {
 		(stop)  args="-K -o -q" ;;
 		(check) args="-K -t -q" ;;
 	esac
-	umask 0024
+	umask 0026
 	busybox start-stop-daemon $args -p $PIDFILE \
 		-x $DAEMON -- $SYSLOG_OPTS
 }

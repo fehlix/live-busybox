@@ -18,7 +18,7 @@ ExecStart=/sbin/syslogd -n $SYSLOG_OPTS
 Restart=on-failure
 # make logfiles root:adm, mode 0640 by default
 Group=adm
-UMask=0024
+UMask=0026
 # To avoid looping by our own messages. This makes our own errors invisible.
 StandardOutput=null
 
