@@ -1759,3 +1759,13 @@ index 755b42ccd..c9960fbe6 100644
  //config:	default y
  //config:	help
  //config:	Network block device client
+diff --git a/networking/udhcp/d6_dhcpc.c b/networking/udhcp/d6_dhcpc.c
+index cdd06188e..628c98207 100644
+--- a/networking/udhcp/d6_dhcpc.c
++++ b/networking/udhcp/d6_dhcpc.c
+@@ -11,4 +11,5 @@
+ //config:	default y
+ //config:	depends on FEATURE_IPV6
++//config:	depends on PLATFORM_LINUX
+ //config:	help
+ //config:	udhcpc6 is a DHCPv6 client
