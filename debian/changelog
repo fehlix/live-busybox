@@ -1,3 +1,10 @@
+busybox (1:1.36.1-9) unstable; urgency=medium
+
+  * platform-linux.diff: udhcpc6 also depends on PLATFORM_LINUX
+    (fixes ftbfs on hurd)
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Tue, 16 Jul 2024 13:51:14 +0300
+
 busybox (1:1.36.1-8) unstable; urgency=medium
 
   * busybox-1.36.1-no-cbq.patch to disable CBQ which is dropped
