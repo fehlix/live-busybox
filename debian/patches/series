@@ -14,11 +14,7 @@ spelling.diff
 platform-linux.diff
 fix-non-linux-build.patch
 #
-syslogd-decrease-stack-usage-50-bytes.patch
-syslogd-daemonize-after-init-make-errs-visible.patch
-syslogd-fix-breakage-caused-by-daemonize-_after_-ini.patch
 syslogd-option_mask32.patch
 syslogd-make-it-optionally-systemd-socket-activated.patch
 #
-install-fix-chown-resetting-suid-sgid-bits-from-chmod.patch
 busybox-1.36.1-no-cbq.patch
