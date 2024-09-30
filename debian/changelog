@@ -1,3 +1,23 @@
+busybox (1:1.37.0-1) UNRELEASED; urgency=medium
+
+  * new upstream release 1.37.0
+    Closes: CVE-2021-42380 (awk use-after-realloc)
+    Cloese: CVE-2023-42363 (awk use-after-free)
+  * d/patches/: refresh platform-linux.diff and version.patch
+  * d/patches/: remove:
+    - install-fix-chown-resetting-suid-sgid-bits-from-chmod.patch
+    - syslogd-daemonize-after-init-make-errs-visible.patch
+    - syslogd-decrease-stack-usage-50-bytes.patch
+    - syslogd-fix-breakage-caused-by-daemonize-_after_-ini.patch
+  * d/config/pkg/*: update configs:
+    - enable time64
+    - enable find exec-ok for regular and static builds
+    - enable getfattr for regular and static builds
+    - enable ip-link-can for regular and static builds
+    - enable feature udhcpd bootp
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Mon, 30 Sep 2024 12:09:43 +0300
+
 busybox (1:1.36.1-9) unstable; urgency=medium
 
   * platform-linux.diff: udhcpc6 also depends on PLATFORM_LINUX
