@@ -1,17 +1,20 @@
 From: Michael Tokarev <mjt@tls.msk.ru>
-Date: Sun, 6 Oct 2024 13:27:13 +0300
-Subject: [PATCH] fix od and hexdump tests on big-endian hosts
+Date: Sun, 6 Oct 2024 14:06:00 +0300
+Subject: [PATCH v2] fix od and hexdump tests on big-endian hosts
 Forwarded: yes
 
-newly added in 1.37.0 tests (od -B, hexdump -e /2 %d) are
+Newly added in 1.37.0 tests (od -B, hexdump -e /2 %d) are
 endian-dependent, and fails on big-endian machines due to
 mismatched output.
 
 Expect different output depending on the host architecture.
 
-Extend od.tests a little to set endian=big|little variable,
-and instead of skipping some tests, choose the correct
-expected output.  Use this for the failing `od -B` test.
+Extend od.tests a little to provide a helper function,
+testing2endian, which expects another version of the
+"expected result" argument - first being for little endian,
+second for big endian.  And use this function for the
+failing `od -B` test, providing the big-endian expected
+result.
 
 Do the same for hexdump.
 
@@ -23,92 +26,100 @@ a better idea to use busybox version of od in this case
 
 Signed-off-by: Michael Tokarev <mjt@tls.msk.ru>
 ---
- testsuite/hexdump.tests | 21 +++++++++++++++++----
- testsuite/od.tests      | 18 ++++++++++++------
- 2 files changed, 29 insertions(+), 10 deletions(-)
+v2: use testing2endian helper function;
+ fix a bug (missing ";")
+
+ testsuite/hexdump.tests | 24 +++++++++++++++++++++++-
+ testsuite/od.tests      | 16 +++++++++++++++-
+ 2 files changed, 38 insertions(+), 2 deletions(-)
 
 diff --git a/testsuite/hexdump.tests b/testsuite/hexdump.tests
-index be0379cfc..60e33784e 100755
+index be0379cfc..dbe13a365 100755
 --- a/testsuite/hexdump.tests
 +++ b/testsuite/hexdump.tests
-@@ -5,6 +5,10 @@
- 
+@@ -6,6 +6,21 @@
  . ./testing.sh
  
-+little_endian=false endian=big
-+{ printf '\0\1' | od -s | grep -q 256; } && little_endian=true endian=little
-+readonly little_endian endian
-+
  # testing "description" "command" "result" "infile" "stdin"
++
++little_endian=false
++{ printf '\0\1' | od -s | grep -q 256; } && little_endian=true
++readonly little_endian
++
++# two versions of "expected result" arg:
++# first for little-, second for big-endian
++testing2endian() {
++  if $little_endian; then
++    testing "$1 (little-endian)" "$2" "$3" "$5" "$6"
++  else
++    testing "$1 (big-endian)"    "$2" "$4" "$5" "$6"
++  fi
++}
++
  testing 'hexdump -C with four NULs' \
  	'hexdump -C' \
-@@ -66,15 +70,24 @@ testing "hexdump -e /1 %d" \
+ 	"\
+@@ -66,7 +81,7 @@ testing "hexdump -e /1 %d" \
  "\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f"\
  "\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff"\
  
 -testing "hexdump -e /2 %d" \
--	"hexdump -e '8/2 \" %6d\" \"\n\"'" \
--	"\
-+if $little_endian; then result="\
++testing2endian "hexdump -e /2 %d" \
+ 	"hexdump -e '8/2 \" %6d\" \"\n\"'" \
+ 	"\
      256    770   1284   1798   2312   2826   3340   3854
-    4368   4882   5396   5910   6424   6938   7452   7966
+@@ -74,6 +89,13 @@ testing "hexdump -e /2 %d" \
    29040  29554  30068  30582  31096  31610  32124  32638
   -32384 -31870 -31356 -30842 -30328 -29814 -29300 -28786
    -3600  -3086  -2572  -2058  -1544  -1030   -516     -2
--" \
-+"
-+else result="\
++" \
++	"\
 +      1    515   1029   1543   2057   2571   3085   3599
 +   4113   4627   5141   5655   6169   6683   7197   7711
 +  28785  29299  29813  30327  30841  31355  31869  32383
 + -32639 -32125 -31611 -31097 -30583 -30069 -29555 -29041
 +  -3855  -3341  -2827  -2313  -1799  -1285   -771   -257
-+"
-+fi
-+testing "hexdump -e /2 %d ($endian-endian)" \
-+	"hexdump -e '8/2 \" %6d\" \"\n\"'" \
-+	"$result" \
+ " \
  	"" \
  "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"\
- "\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"\
 diff --git a/testsuite/od.tests b/testsuite/od.tests
-index 4f245a7e8..f2498dd19 100755
+index 4f245a7e8..c739a8506 100755
 --- a/testsuite/od.tests
 +++ b/testsuite/od.tests
-@@ -8,8 +8,8 @@
- 
- input="$(printf '\001\002\003\nABC\xfe')"
- 
--little_endian=false
--{ printf '\0\1' | od -s | grep -q 256; } && little_endian=true
-+little_endian=false endian=big
-+{ printf '\0\1' | od -s | grep -q 256; } && little_endian=true endian=little
+@@ -12,6 +12,16 @@ little_endian=false
+ { printf '\0\1' | od -s | grep -q 256; } && little_endian=true
  readonly little_endian
  
++# two versions of "expected result" arg:
++# first for little-, second for big-endian
++testing2endian() {
++  if $little_endian; then
++    testing "$1 (little-endian)" "$2" "$3" "$5" "$6"
++  else
++    testing "$1 (big-endian)"    "$2" "$4" "$5" "$6"
++  fi
++}
++
  $little_endian || SKIP=1
-@@ -61,12 +61,18 @@ testing "od -a (DESKTOP)" \
+ testing "od (little-endian)" \
+         "od" \
+@@ -61,11 +71,15 @@ testing "od -a (DESKTOP)" \
  "\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff"
  SKIP=
  
 -testing "od -B" \
--        "od -B" \
--"\
-+if $little_endian then result="\
++testing2endian "od -B" \
+         "od -B" \
+ "\
  0000000 001001 005003 041101 177103
  0000010
--" \
-+"
-+else result="\
++" \
++"\
 +0000000 000402 001412 040502 041776
 +0000010
-+"
-+fi
-+testing "od -B ($endian-endian)" \
-+        "od -B" \
-+        "$result" \
+ " \
  	"" "$input"
  SKIP=
- 
 -- 
 2.39.5
 
