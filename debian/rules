@@ -158,7 +158,8 @@ execute_after_dh_link-arch:
 # for udeb we also need links. But we can not easily use `make install'
 # (see comment above). So we run the install rules directly here:
 	dh_link -pbusybox-udeb \
-	  $$(grep -v sbin/init $b/udeb/busybox.links | sed 's|^|/bin/busybox |')
+	  $$(grep -v sbin/init $b/udeb/busybox.links |
+	     sed -e 's|/usr/|/|' -e 's|^|/usr/bin/busybox /usr|')
 
 execute_before_dh_gencontrol-arch:
 # after shlibdeps finished, grab ${shlibs:Depends} from busybox package
