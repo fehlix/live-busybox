@@ -1,3 +1,15 @@
+busybox (1:1.37.0-7) unstable; urgency=medium
+
+  * patches/archival-disallow-path-traversals-CVE-2023-39810.patch
+    (Closes: #1055307, CVE-2023-39810)
+  * archival-disallow-path-traversals-CVE-2023-39810.patch:
+    use the correct "echo" when constructing the archive
+  * d/config/pkg/* CONFIG_FEATURE_PATH_TRAVERSAL_PROTECTION=y
+  * enable chattr and lsattr applets (Closes: #1119539)
+  * udeb: install all links in /usr/, do not touch /bin & /sbin
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Fri, 31 Oct 2025 12:47:09 +0300
+
 busybox (1:1.37.0-6) unstable; urgency=medium
 
   * udeb config: remove wget applet
