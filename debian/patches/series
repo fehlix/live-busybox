@@ -25,3 +25,4 @@ awk.c-fix-CVE-2023-42366-bug-15874.patch
 wget-disallow-control-chars-in-URLs-CVE-2025-60876.patch
 archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394.patch
 archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394-2.patch
+netstat-sanitize-argv0-for-p-CVE-2024-58251.patch
