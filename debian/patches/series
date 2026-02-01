@@ -22,3 +22,4 @@ libbb-sha-add-missing-sha-NI-guard.patch
 fix-od-and-hexdump-tests-on-big-endian-hosts.patch
 archival-disallow-path-traversals-CVE-2023-39810.patch
 awk.c-fix-CVE-2023-42366-bug-15874.patch
+wget-disallow-control-chars-in-URLs-CVE-2025-60876.patch
