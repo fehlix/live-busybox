@@ -1,3 +1,19 @@
+busybox (1:1.37.0-8) unstable; urgency=medium
+
+  * awk.c-fix-CVE-2023-42366-bug-15874.patch (Closes: #1059053)
+  * wget-disallow-control-chars-in-URLs-CVE-2025-60876.patch (Closes: #1120795)
+  * two patches (one from upstream and missing hunk) to fix CVE-2025-46394:
+    archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394.patch
+    archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394-2.patch
+    (Closes: #1104008)
+  * config: deb,static: enable resize applet
+  * initramfs-tools/conf-hooks.d/busybox: remove,
+    initramfs-tools don't use $BUSYBOXDIR anymore
+  * initramfs-tools/hooks/zz-busybox:
+    print applets added to initramfs in verbose mode
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Sun, 01 Feb 2026 19:29:24 +0300
+
 busybox (1:1.37.0-7) unstable; urgency=medium
 
   * patches/archival-disallow-path-traversals-CVE-2023-39810.patch
