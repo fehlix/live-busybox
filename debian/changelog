@@ -1,3 +1,12 @@
+busybox (1:1.37.0-10) unstable; urgency=medium
+
+  * Revert "initramfs-tools/conf-hooks.d/busybox:
+            remove, initramfs-tools do not use $BUSYBOXDIR anymore"
+    As it turns out, it *is* used still.
+    (Closes: #1126810, #1126809)
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Mon, 02 Feb 2026 11:25:51 +0300
+
 busybox (1:1.37.0-9) unstable; urgency=medium
 
   * netstat-sanitize-argv0-for-p-CVE-2024-58251.patch (Closes: #1104009)
