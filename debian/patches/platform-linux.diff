@@ -1501,6 +1501,16 @@ index a9f56f388..7443a7c69 100644
 +//config:	depends on PLATFORM_LINUX
  //config:	select LONG_OPTS
  //config:	help
+diff --git a/e2fsprogs/chattr.c b/e2fsprogs/chattr.c
+index 5dec3253b..7aee8c64c 100644
+--- a/e2fsprogs/chattr.c
++++ b/e2fsprogs/chattr.c
+@@ -13,4 +13,5 @@
+ //config:	bool "chattr (4.1 kb)"
+ //config:	default y
++//config:	depends on PLATFORM_LINUX
+ //config:	help
+ //config:	chattr changes the file attributes on a second extended file system.
 -- 
 2.39.5
 
