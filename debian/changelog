@@ -1,3 +1,14 @@
+busybox (1:1.37.0-10.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * CVE-2026-26157: Incomplete path sanitization in archive
+    extraction utilities
+  * CVE-2026-26158: File modification outside of the intended
+    extraction directory in tar
+  * (Closes: #1127782)
+
+ -- Adrian Bunk <bunk@debian.org>  Wed, 04 Mar 2026 19:42:01 +0200
+
 busybox (1:1.37.0-10) unstable; urgency=medium
 
   * Revert "initramfs-tools/conf-hooks.d/busybox:

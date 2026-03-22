@@ -26,3 +26,5 @@ wget-disallow-control-chars-in-URLs-CVE-2025-60876.patch
 archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394.patch
 archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394-2.patch
 netstat-sanitize-argv0-for-p-CVE-2024-58251.patch
+0001-tar-strip-unsafe-hardlink-components-GNU-tar-does-th.patch
+0002-tar-only-strip-unsafe-components-from-hardlinks-not-.patch
