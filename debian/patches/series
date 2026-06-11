@@ -10,7 +10,6 @@ stop-checking-ancient-kernel-version.patch
 revert-9c143ce52da11ec3d21a3491c3749841d3dc10f0.patch
 temp-deb-installer-hack.patch
 install-readlink-in-bin.patch
-spelling.diff
 platform-linux.diff
 fix-non-linux-build.patch
 #
@@ -18,13 +17,7 @@ syslogd-option_mask32.patch
 syslogd-make-it-optionally-systemd-socket-activated.patch
 #
 busybox-1.36.1-no-cbq.patch
-libbb-sha-add-missing-sha-NI-guard.patch
-fix-od-and-hexdump-tests-on-big-endian-hosts.patch
-archival-disallow-path-traversals-CVE-2023-39810.patch
 awk.c-fix-CVE-2023-42366-bug-15874.patch
 wget-disallow-control-chars-in-URLs-CVE-2025-60876.patch
-archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394.patch
 archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394-2.patch
 netstat-sanitize-argv0-for-p-CVE-2024-58251.patch
-0001-tar-strip-unsafe-hardlink-components-GNU-tar-does-th.patch
-0002-tar-only-strip-unsafe-components-from-hardlinks-not-.patch
