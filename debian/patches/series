@@ -1,7 +1,3 @@
-# The following patches need significant re-working for the current version
-# u-mount-FreeBSD-support.patch
-# swaponoff-FreeBSD-support.patch
-
 # other patches
 shell-ash-export-HOME.patch
 version.patch
