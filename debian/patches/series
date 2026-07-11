@@ -18,3 +18,4 @@ archival-libarchive-sanitize-filenames-on-output-CVE-2025-46394-2.patch
 netstat-sanitize-argv0-for-p-CVE-2024-58251.patch
 cpio-tests-echo.diff
 ls-tests-printf.diff
+coreutils-cut.c-typo-fix-delimeter.patch
