@@ -1,4 +1,4 @@
-#!/bin/busybox ash
+#!/usr/bin/busybox ash
 #
 # init.d script with LSB support.
 #
