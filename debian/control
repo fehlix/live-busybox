@@ -1,5 +1,4 @@
 Source: busybox
-Priority: optional
 Section: utils
 Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
 Uploaders:
@@ -12,7 +11,6 @@ Standards-Version: 4.7.4
 Vcs-Git: https://salsa.debian.org/installer-team/busybox.git
 Vcs-Browser: https://salsa.debian.org/installer-team/busybox
 Homepage: http://www.busybox.net
-Rules-Requires-Root: no
 
 Package: busybox
 Architecture: any
