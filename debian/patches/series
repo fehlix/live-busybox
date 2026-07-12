@@ -17,3 +17,4 @@ netstat-sanitize-argv0-for-p-CVE-2024-58251.patch
 cpio-tests-echo.diff
 ls-tests-printf.diff
 coreutils-cut.c-typo-fix-delimeter.patch
+ash-omit-variables-with-invalid-names-in-showvars.patch
