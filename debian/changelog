@@ -1,4 +1,4 @@
-busybox (1:1.38.0-2) UNRELEASED; urgency=medium
+busybox (1:1.38.0-2) unstable; urgency=medium
 
   * d/copyright: convert to DEP-5 format (initial)
   * d/busybox-syslogd.init: use full /usr/bin path to interpreter
@@ -16,7 +16,7 @@ busybox (1:1.38.0-2) UNRELEASED; urgency=medium
   * ash-omit-variables-with-invalid-names-in-showvars.patch: fix the `set'
     builtin to omit showing environment variables with invalid names entirely
 
- -- Michael Tokarev <mjt@tls.msk.ru>  Sat, 11 Jul 2026 19:20:55 +0300
+ -- Michael Tokarev <mjt@tls.msk.ru>  Sat, 25 Jul 2026 14:43:36 +0300
 
 busybox (1:1.38.0-1) unstable; urgency=medium
 
