@@ -2,6 +2,7 @@
 
 # udhcpc client script to be used by Debian Installer
 # Copyright (C) 2009, 2010 Otavio Salvador <otavio@debian.org>
+# Copyright (C) 2026 Michael Tokarev <mjt@tls.msk.ru>
 
 comma_separate() {
 	echo "$1" | sed 's/ /,/g'
@@ -66,9 +67,10 @@ case "$1" in
 		# special case for /32 subnets, use onlink when adding routes
 		[ ".$subnet" = .255.255.255.255 ] \
 			 && onlink="dev $interface onlink" || onlink=
-		for r in "$router"; do
+		router="${router%% *}" # linux kernel supports only one (default) route
+		if [ -n "$router" ]; then
 			ip -4 route add default via "$r" $onlink
-		done
+		fi
 
 		do_resolv_conf
 
