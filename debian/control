@@ -108,6 +108,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends:
  busybox (>> ${source:Upstream-Version}) | busybox-static (>> ${source:Upstream-Version}),
  ${misc:Depends},
+Provides: dhcp-client
 Description: Provides the busybox DHCP client implementation
  Busybox contains a very small yet fully functional RFC compliant DHCP
  client udhcpc.
