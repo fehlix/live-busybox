@@ -125,7 +125,6 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends:
  busybox (>> ${source:Upstream-Version}) | busybox-static (>> ${source:Upstream-Version}),
  ${misc:Depends},
-Provides: dhcpd
 Description: Provides the busybox DHCP server implementation
  Busybox contains a very small yet fully function RFC compliant DHCP
  server udhcpd.
