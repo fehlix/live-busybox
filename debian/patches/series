@@ -20,3 +20,4 @@ coreutils-cut.c-typo-fix-delimeter.patch
 ash-omit-variables-with-invalid-names-in-showvars.patch
 ash-fix-out-of-bounds-read-in-ifsbreakup-CVE-2026-38754.patch
 ash-fix-stack-overflow-in-evalfun-CVE-2026-38755.patch
+awk-fix-stack-overflow-in-evaluate-CVE-2026-38752.patch
