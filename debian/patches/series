@@ -18,3 +18,4 @@ cpio-tests-echo.diff
 ls-tests-printf.diff
 coreutils-cut.c-typo-fix-delimeter.patch
 ash-omit-variables-with-invalid-names-in-showvars.patch
+ash-fix-out-of-bounds-read-in-ifsbreakup-CVE-2026-38754.patch
