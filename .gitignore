@@ -1,0 +1,11 @@
+# quilt state (patches applied by dpkg-source / builds)
+/.pc/
+# build tree of debian/rules
+/b/
+# debhelper leftovers
+/debian/.debhelper/
+/debian/debhelper-build-stamp
+/debian/files
+/debian/*.substvars
+/debian/*.debhelper.log
+/debian/live-busybox/
