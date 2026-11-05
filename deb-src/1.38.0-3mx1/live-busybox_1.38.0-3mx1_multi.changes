@@ -1,0 +1,80 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Format: 1.8
+Date: Thu, 05 Nov 2026 16:36:07 -0500
+Binary: live-busybox
+Source: live-busybox
+Architecture: amd64 i386 source
+Version: 1.38.0-3mx1
+Distribution: mx
+Urgency: medium
+Maintainer: fehlix <fehlix@mxlinux.org>
+Changed-By: fehlix <fehlix@mxlinux.org>
+Description: 
+ live-busybox - static BusyBox binary for the MX/antiX live-initrd
+Changes:
+ live-busybox (1.38.0-3mx1) mx; urgency=medium
+ .
+   * New package: static busybox for the MX/antiX live-initrd, built from
+     Debian's busybox 1:1.38.0-3 source (incl. all Debian patches).
+   * Single flavour "live", config debian/config/pkg/live, derived from the
+     config embedded in the previously used BusyBox v1.31.1 (bbconfig),
+     updated to 1.38.0 with oldconfig:
+     - same applet set as before (new 1.38 applets disabled)
+     - static build; use busybox own passwd/group handling and crypt
+       (incl. yescrypt), as Debian's busybox-static does
+   * Link statically against musl instead of glibc (616K instead of 1.7M):
+     - FEATURE_VI_REGEX_SEARCH disabled (needs GNU regex, not in musl)
+     - debian/testsuite-musl.diff: skip 2 tests failing due to musl limits
+       (awk "\<" with empty match, needs REG_STARTEND; date -d with a
+       timezone in the date string, needs strptime %z)
+   * debian/patches/live-ttyname-fallback-without-proc.patch:
+     xmalloc_ttyname() falls back to scanning /dev when /proc is not
+     mounted (musl ttyname_r needs /proc/self/fd); fixes "tty" printing
+     "not a tty" in the early initrd (init: setfont $file -C $(tty)).
+   * Installs into /usr/lib/live-busybox/ only, no applet symlinks.
+Checksums-Sha1: 
+ dd92c2a208429daa2fe2a129e27aa94b2a940e5e 2083 live-busybox_1.38.0-3mx1.dsc
+ 6ef8d237a825ed0a61fee4f68d42b19d4d3aca5d 2695723 live-busybox_1.38.0.orig.tar.bz2
+ 101b46347e888a5603a7130d53534178aa04eeae 121 live-busybox_1.38.0.orig.tar.bz2.asc
+ 13a52ccb6cfbf96bc0d833797ee9dc97e22698c2 62088 live-busybox_1.38.0-3mx1.debian.tar.xz
+ 5be9b69ec1eaca10ddc49f0c2138ffee53819ea0 5829 live-busybox_1.38.0-3mx1_amd64.buildinfo
+ 917fc5e6aae37c10981fc1ef0541fa5c97574bf2 354344 live-busybox_1.38.0-3mx1_amd64.deb
+ 7d6a64aa4f7854d28570a80df2f4ec70482ddd51 5733 live-busybox_1.38.0-3mx1_i386.buildinfo
+ 0e8f772ef2c5b0de73e8e0ef88e3a591d78b8e29 353188 live-busybox_1.38.0-3mx1_i386.deb
+Checksums-Sha256: 
+ 52589c54009f84fd5ab2c118d4fd1573fde37d2619418898110c8ef3e76af7b3 2083 live-busybox_1.38.0-3mx1.dsc
+ 34f9ea6ff8636f2c9241153b9114eefa9e65674a45318ae1ef95bb5f31c53bb2 2695723 live-busybox_1.38.0.orig.tar.bz2
+ a496ee9653bc7faa0fd159f171b257bb6df612018fd8e50be83d956c16107a5b 121 live-busybox_1.38.0.orig.tar.bz2.asc
+ 3b6e07b5dd22a325183adb14085c675a5c27a6d8aa8dae101c707fc15e34d067 62088 live-busybox_1.38.0-3mx1.debian.tar.xz
+ 84ec91991bd8e38f2d0a93bf550f89b50253126ef7f85f5f14be7e31582af6ee 5829 live-busybox_1.38.0-3mx1_amd64.buildinfo
+ bb15fbad356f77af2ec75627ce909f9e3a4931ee815bd5b4c9aeb18cc0665ee6 354344 live-busybox_1.38.0-3mx1_amd64.deb
+ 0b4264fe24e34bd0ef463d2ed8402b0844d4cbc9365e8589a3ba348d9338ca80 5733 live-busybox_1.38.0-3mx1_i386.buildinfo
+ 657db9469d4c1b0f8f87b8eab9dc0933de276c0499d7abb56a3544985eecdb78 353188 live-busybox_1.38.0-3mx1_i386.deb
+Files: 
+ 3bd6791a35292850c880f0a205d5851f 2083 utils optional live-busybox_1.38.0-3mx1.dsc
+ 2a76df79da776a165bf85257403c97bc 2695723 utils optional live-busybox_1.38.0.orig.tar.bz2
+ 10550c8523d66769aa17f6a0e22d35a1 121 utils optional live-busybox_1.38.0.orig.tar.bz2.asc
+ 99666f871ab447377bac4bfc85b86abe 62088 utils optional live-busybox_1.38.0-3mx1.debian.tar.xz
+ 7391d6e014e329099aaf8300c828bf6b 5829 utils optional live-busybox_1.38.0-3mx1_amd64.buildinfo
+ adce975cd87f54941f71c6d07666f78d 354344 utils optional live-busybox_1.38.0-3mx1_amd64.deb
+ 814da443fe041685156f0905350c4d42 5733 utils optional live-busybox_1.38.0-3mx1_i386.buildinfo
+ 6afd0634f1bbae4268d56e3224252c95 353188 utils optional live-busybox_1.38.0-3mx1_i386.deb
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEgRnC8/wKXRM2S0xLL1ePG6ydm+kFAmrs+KAACgkQL1ePG6yd
+m+n3Xg/+Mz83KyQ8JSYZNKg2kyHF9F+4yddgoSU3yMllde3Fh9z4G0TDIT/dnfH6
+FF/4ErmRuiDaUUaoVkQer9NSKLI7iu1NdnCMqKuNGt+kTQsIhRn3WjgpbdRLdZs2
+sqtHa1vGSWblPDQGKOJptMyk4GyMGoyU/CgJeJUPXeoGp4vS3SNtnB1Hsnsk+LFt
+IF8JHyVgXPJaXpWyWYX2WKuBMPfheB2nlaxK0S+9KoL/CWhlTbxeihrb5Q6EJ81t
+tJvYDelhs6RJmfhlVT8qNKrDQ/csY7RvdfGgszcQvsEIkCCUUgSbfwDxRC1cZlyp
+EUESbGFgkB8i6/6m4HojWG9+ulNPNBPMZ1t05nhMfF6UIj3BHPzfWu0syI7wzcHp
+4klF+w0t1WjCdYwU1qGQTymvX5mt6SdMdqQPv092aoIa3SOIbgMsnB7NZz4DpEFq
+MVBsbKmWH2tqulUWchPhnG25g6sqpbsKZiy1poXOse9UXp2tRQkciVztC0nrAOM4
+PEJ+NBdL6x/Aw+iDgLuZakSvnMPkZAphvaoz37tQRv4d4e0okPVj4+lq9TzegZWg
+yyDPwcSHbOsDlQKFQvhLgEvF9hVbB2pYunT/czFTOt6T3U6kNji4WMZwOHS0SZ4M
+MGR0LVvx8W4wsrNuytjpucRzT9HPwzv65MLLwyyPV2yfMsL1CO4=
+=9Kvy
+-----END PGP SIGNATURE-----
