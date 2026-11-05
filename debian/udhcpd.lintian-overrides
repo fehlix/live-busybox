@@ -1,2 +1,0 @@
-udhcpd: unusual-interpreter /usr/bin/busybox *etc/init.d/udhcpd*
-udhcpd: init.d-script-uses-usr-interpreter /usr/bin/busybox *etc/init.d/udhcpd*

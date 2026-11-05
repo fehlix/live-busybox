@@ -1,3 +1,26 @@
+live-busybox (1.38.0-3mx1) mx; urgency=medium
+
+  * New package: static busybox for the MX/antiX live-initrd, built from
+    Debian's busybox 1:1.38.0-3 source (incl. all Debian patches).
+  * Single flavour "live", config debian/config/pkg/live, derived from the
+    config embedded in the previously used BusyBox v1.31.1 (bbconfig),
+    updated to 1.38.0 with oldconfig:
+    - same applet set as before (new 1.38 applets disabled)
+    - static build; use busybox own passwd/group handling and crypt
+      (incl. yescrypt), as Debian's busybox-static does
+  * Link statically against musl instead of glibc (616K instead of 1.7M):
+    - FEATURE_VI_REGEX_SEARCH disabled (needs GNU regex, not in musl)
+    - debian/testsuite-musl.diff: skip 2 tests failing due to musl limits
+      (awk "\<" with empty match, needs REG_STARTEND; date -d with a
+      timezone in the date string, needs strptime %z)
+  * debian/patches/live-ttyname-fallback-without-proc.patch:
+    xmalloc_ttyname() falls back to scanning /dev when /proc is not
+    mounted (musl ttyname_r needs /proc/self/fd); fixes "tty" printing
+    "not a tty" in the early initrd (init: setfont $file -C $(tty)).
+  * Installs into /usr/lib/live-busybox/ only, no applet symlinks.
+
+ -- fehlix <fehlix@mxlinux.org>  Tue, 03 Nov 2026 08:39:03 -0500
+
 busybox (1:1.38.0-3) unstable; urgency=medium
 
   * fix 4 (minor) security issues (Closes: #1142472):

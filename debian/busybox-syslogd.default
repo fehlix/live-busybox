@@ -1,9 +1,0 @@
-# Defaults for busybox-syslogd initscript
-# This is a POSIX shell fragment sourced by
-# /etc/init.d/busybox-syslogd and /etc/init.d/busybox-klogd
-
-# Additional options that are passed to the daemons.
-# Possible options, see: busybox syslogd -h
-SYSLOG_OPTS="-C128"
-# Possible options, see: busybox klogd -h
-KLOG_OPTS=""

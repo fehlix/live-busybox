@@ -1,56 +1,38 @@
+live-busybox
+============
 
-# Flavour policies
+Static busybox for the MX/antiX live-initrd (mx-iso-template).
+Source: Debian busybox (debian/patches is Debian's patch set, unchanged).
 
-At the moment, busybox comes with three different configuration sets,
-called "flavours"
+Only one flavour is built: "live", configured by debian/config/pkg/live.
+It is linked statically against musl (musl-gcc from musl-tools). Kernel
+headers are made visible to musl-gcc via symlinks in b/kernel-headers.
 
-* deb: For use in regular installations/testing
-* static: For use in initramfs
-* udeb: For use in the installer
+musl differences vs. the old uClibc/glibc builds:
+  - FEATURE_VI_REGEX_SEARCH is off (needs GNU regex API), plain vi search works
+  - no ERE back-references inside the pattern (grep -E '(ab)\1')
+  - \< followed by an empty-matching expression (awk gsub(/\<b*/,...))
+  - date -d does not accept a timezone inside the date string
+  The two affected testsuite cases are removed by debian/testsuite-musl.diff.
 
-The deb flavour may omit a few apps you can expect to find in any
-decent installations (e.g. dpkg, ed, passwd, fdisk, cron, tc, telnet).
+debian/config/reference/ holds, for comparison only (not used in the build):
+  mx-busybox-1.31.1.config   config recovered from the old initrd busybox
+                             ("busybox bbconfig"), the origin of pkg/live
+  deb static udeb            Debian's flavour configs of this version
 
-The static flavour should be usable as a standalone system.
+Changing the configuration / new upstream version
+-------------------------------------------------
+The build fails if the shipped config differs from what oldconfig
+generates (e.g. new upstream options). To update:
 
-The udeb flavour should be kept as small as possible as some
-architectures still have space contraints. Enabling new features
-possibly should be discussed on debian-boot first.
+  mkdir /tmp/bbcfg && cp debian/config/pkg/live /tmp/bbcfg/.config
+  make -C /tmp/bbcfg -f $PWD/Makefile KBUILD_SRC=$PWD oldconfig   # or menuconfig
+  cp /tmp/bbcfg/.config debian/config/pkg/live
 
+Keep the applet set in sync with what the live-initrd uses; new applets
+default to "y" in oldconfig - say "n" unless needed.
 
-# Upgrade configurations to a new kernel version
-
-Syptom: Build breaks at something like
-
-| cmp debian/config/pkg/$FLAVOUR debian/build/$FLAVOUR/.config
-| debian/config/pkg/$FLAVOUR debian/build/$FLAVOUR/.config differ: byte 74, line 3
-
-where $FLAVOUR is one of the flavours (deb static udeb).
-
-Instructions:
-
-* Build manually
-
-    debian/rules override_dh_auto_configure
-
-* Restore the previous version
-
-    mv debian/build/$FLAVOUR/.config.old debian/build/$FLAVOUR/.config
-
-* Run oldconfig manually
-
-    make -C debian/build/$FLAVOUR oldconfig
-
-  Document changes to the feature set in the commit message later.
-  As stated above, for the udeb flavour is virtually always "no".
-
-* Apply the changes to debian/config
-
-    cp debian/build/$FLAVOUR/.config debian/config/pkg/$FLAVOUR
-
-* Finishing work
-  * Edit debian/config/pkg/$FLAVOUR and strip the time time in the
-    first lines before.
-  * Check the diff for surprising changes
-
-* This needs to be done for all three flavours
+Building both architectures
+---------------------------
+  amd64:  dpkg-buildpackage -us -uc -b
+  i386:   build in an i386 chroot, e.g. sbuild --arch=i386 / pbuilder
